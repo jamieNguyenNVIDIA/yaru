@@ -32,6 +32,7 @@ option('accent-colors',
         'blue',
         'purple',
         'magenta',
+        'nvidia',
         'red',
     ],
 )
