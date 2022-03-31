@@ -1,3 +1,9 @@
+yaru-theme (22.04.4-nvidia) jammy; urgency=medium
+
+  * Add NVIDIA theme
+
+ -- dgx-dev <dgx-dev@nvidia-com>  Mon, 18 Apr 2022 09:42:05 -0700
+
 yaru-theme (22.04.4) jammy; urgency=medium
 
   [ Marco Trevisan (Treviño) ]
