@@ -6,7 +6,7 @@ stylesheet_deps = []
 if not fs.exists('base.css')
   sassc = find_program('sassc', required: false)
   if not sassc.found()
-    subproject('sassc')
+    subproject('sassc', default_options: ['warning_level=0', 'werror=false'])
     sassc = find_program('sassc')
   endif
 
@@ -19,14 +19,17 @@ if not fs.exists('base.css')
       '_compat-colors.scss',
       '_defaults.scss',
       '_drawing.scss',
-      '_functions.scss',
+      '_palette.scss',
       '_widgets.scss',
 
       'widgets/_avatar.scss',
+      'widgets/_bottom-sheet.scss',
       'widgets/_buttons.scss',
       'widgets/_calendar.scss',
       'widgets/_checks.scss',
       'widgets/_color-chooser.scss',
+      'widgets/_column-view.scss',
+      'widgets/_deprecated.scss',
       'widgets/_dialogs.scss',
       'widgets/_dropdowns.scss',
       'widgets/_emoji-chooser.scss',
@@ -34,6 +37,7 @@ if not fs.exists('base.css')
       'widgets/_expanders.scss',
       'widgets/_file-chooser.scss',
       'widgets/_header-bar.scss',
+      'widgets/_inspector.scss',
       'widgets/_labels.scss',
       'widgets/_level-bar.scss',
       'widgets/_linked.scss',
@@ -56,10 +60,9 @@ if not fs.exists('base.css')
       'widgets/_switch.scss',
       'widgets/_tab-view.scss',
       'widgets/_text-selection.scss',
+      'widgets/_toggle-group.scss',
       'widgets/_toolbars.scss',
       'widgets/_tooltip.scss',
-      'widgets/_transition-shadow.scss',
-      'widgets/_trees.scss',
       'widgets/_views.scss',
       'widgets/_view-switcher.scss',
       'widgets/_window.scss',
