@@ -27,10 +27,18 @@ popover.emoji-picker emoji {
 
   &:focus,
   &:hover {
-    background: $view_selected_color;
+    background: $hover_color;
+  }
 
+  &:active {
+    background: $active_color;
+  }
+
+  @if $contrast == 'high' {
+    &:focus,
+    &:hover,
     &:active {
-      background: $view_active_color;
+      box-shadow: inset 0 0 0 1px $border_color;
     }
   }
 }
@@ -39,12 +47,12 @@ popover.emoji-picker scrolledwindow.view {
   background: none;
   color: inherit;
 
-  > undershoot.top {
-    box-shadow: inset 0 1px $border_color;
+  &:not(.undershoot-top) {
+    @include undershoot(top);
   }
 
-  > undershoot.bottom {
-    box-shadow: inset 0 -1px $border_color;
+  &:not(.undershoot-bottom) {
+    @include undershoot(bottom);
   }
 }
 
@@ -70,11 +78,19 @@ emoji-completion-row {
 
   &:focus,
   &:hover {
-    background-color: $view_selected_color;
-    color: $view_fg_color;
+    background-color: $selected_color;
+    color: var(--popover-fg-color);
+  }
 
+  &:active {
+    background-color: $active_color; // matching buttons
+  }
+
+  @if $contrast == 'high' {
+    &:focus,
+    &:hover,
     &:active {
-      background-color: $view_active_color; // matching buttons
+      box-shadow: inset 0 0 0 1px $border_color;
     }
   }
 }

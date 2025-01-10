@@ -1,212 +1,145 @@
-$tab_needs_attention_gradient: radial-gradient(ellipse at bottom,
-                                               transparentize(white, .2),
-                                               gtkalpha($accent_color, .4) 10%,
-                                               gtkalpha($accent_color, 0) 30%);
-
-
-@mixin undershoot-gradient($dir, $color) {
-  background: linear-gradient(to #{$dir},
-                              $color,
-                              transparentize(black, 1) 20px);
-}
-
-@mixin need-attention-gradient($dir) {
-  background: linear-gradient(to #{$dir},
-                              gtkalpha($accent_color, .5),
-                              gtkalpha($accent_color, .3) 1px,
-                              gtkalpha($accent_color, 0) 20px);
-}
-
 tabbar {
   .box {
-    min-height: 38px;
-  }
+    background-color: var(--headerbar-bg-color);
+    color: var(--headerbar-fg-color);
+    box-shadow: inset 0 -1px if($contrast == 'high', $headerbar_border_color, var(--headerbar-shade-color));
+    padding: 1px;
+    padding-top: 0;
 
-  scrolledwindow.pinned {
-    undershoot {
-      border: 0 solid $border_color;
-    }
+    &:backdrop {
+      background-color: var(--headerbar-backdrop-color);
+      transition: background-color $backdrop_transition;
 
-    &:dir(rtl) undershoot.left {
-      border-left-width: 1px;
-    }
-
-    &:dir(ltr) undershoot.right {
-      border-right-width: 1px;
-    }
-
-    tabbox > background {
-      &:dir(ltr) {
-        box-shadow: inset -1px 0 $border_color;
-      }
-
-      &:dir(rtl) {
-        box-shadow: inset 1px 0 $border_color;
+      > scrolledwindow,
+      > .start-action,
+      > .end-action {
+        filter: opacity(0.5);
+        transition: filter $backdrop_transition;
       }
     }
-  }
-
-  undershoot {
-    transition: background 150ms ease-in-out;
-
-    &.left {
-      @include undershoot-gradient("right", $shade_color);
-    }
-
-    &.right {
-      @include undershoot-gradient("left", $shade_color);
-    }
-  }
-
-  .needs-attention-left undershoot.left {
-    @include need-attention-gradient("right");
-  }
-
-  .needs-attention-right undershoot.right {
-    @include need-attention-gradient("left");
   }
 
   tabbox {
-    > background {
-      background-color: $shade_color;
+    padding-bottom: 6px;
+    padding-top: 6px;
+    min-height: 34px;
+
+    > tabboxchild {
+      @include focus-ring($focus-state: ':focus-within:focus-visible');
+      border-radius: $button_radius;
     }
 
-    > widget {
-      @include focus-ring();
+    > separator {
+      margin-top: 3px;
+      margin-bottom: 3px;
+      transition: opacity 150ms ease-in-out;
+
+      &.hidden {
+        opacity: 0;
+      }
+    }
+
+    > revealer > indicator {
+      min-width: 2px;
+      border-radius: 2px;
+      margin: 3px 6px;
+      background: if($contrast == 'high', var(--accent-color), color-mix(in srgb, var(--accent-color) 50%, transparent));
     }
   }
 
   tab {
-    border-style: solid;
-    border-color: $border_color;
-    border-width: 0 1px 0 1px;
     transition: background 150ms ease-in-out;
-    background-color: gtkalpha($shade_color, .6);
-    background-clip: padding-box;
 
-    &:checked {
-      background-color: transparent;
+    @if $contrast == 'high' {
+      &:hover,
+      &:active,
+      &:selected {
+        box-shadow: inset 0 0 0 1px $border_color;
+      }
     }
 
-    &:hover {
-      background-image: image(gtkalpha(currentColor, .03));
+    &:selected {
+      background-color: $selected_color;
+
+      &:hover { background-color: $selected_hover_color; }
+      &:active { background-color: $selected_active_color; }
     }
 
-    &.needs-attention {
-      background-image: $tab_needs_attention_gradient;
+    &:hover { background-color: $hover_color; }
+    &:active { background-color: $active_color; }
+  }
 
-      &:hover {
-        background-image: image(gtkalpha(currentColor, .03)), $tab_needs_attention_gradient;
+  tabbox.single-tab tab {
+    &, &:hover, &:active {
+      background: none;
+
+      @if $contrast == 'high' {
+        box-shadow: none;
       }
     }
   }
 
   .start-action,
   .end-action {
-    background-color: gtkalpha($shade_color, .6);
-    background-clip: padding-box;
-    border-color: $border_color;
-    border-style: solid;
-    transition: background 150ms ease-in-out;
-
-    button {
-      border: none;
-      border-radius: 0;
-    }
+    padding: 6px 5px;
   }
 
   .start-action:dir(ltr),
   .end-action:dir(rtl) {
-    border-right-width: 1px;
+    padding-right: 0;
   }
 
   .start-action:dir(rtl),
   .end-action:dir(ltr) {
-    border-left-width: 1px;
+    padding-left: 0;
   }
 
-  &:not(.inline) {
-    .box {
-      background-color: $headerbar_bg_color;
-      color: $headerbar_fg_color;
-      border-bottom: 1px solid $headerbar_border_color;
-    }
+  &.inline {
+    @extend %tabbar-inline;
+  }
+}
 
-    scrolledwindow.pinned {
-      undershoot {
-        border-color: $headerbar_border_color;
-      }
+%tabbar-inline .box {
+  background-color: transparent;
+  color: inherit;
+  box-shadow: none;
+  padding-bottom: 0;
 
-      tabbox > background {
-        &:dir(ltr) {
-          box-shadow: inset -1px 0 $headerbar_border_color;
-        }
+  &:backdrop {
+    background-color: transparent;
+    transition: none;
 
-        &:dir(rtl) {
-          box-shadow: inset 1px 0 $headerbar_border_color;
-        }
-      }
-    }
-
-    undershoot {
-      &.left {
-        @include undershoot-gradient("right", $headerbar_shade_color);
-      }
-
-      &.right {
-        @include undershoot-gradient("left", $headerbar_shade_color);
-      }
-    }
-
-    .needs-attention-left undershoot.left {
-      @include need-attention-gradient("right");
-    }
-
-    .needs-attention-right undershoot.right {
-      @include need-attention-gradient("left");
-    }
-
-    tabbox > background {
-      background-color: $headerbar_shade_color;
-    }
-
-    tab {
-      border-color: $headerbar_border_color;
-      background-color: gtkalpha($headerbar_shade_color, .6);
-
-      &:checked {
-        background-color: transparent;
-      }
-    }
-
-    .start-action,
-    .end-action {
-      background-color: gtkalpha($headerbar_shade_color, .6);
-      border-color: $headerbar_border_color;
-    }
-
-    &:backdrop .box {
-      background-color: $headerbar_backdrop_color;
-      transition: $backdrop_transition;
+    > scrolledwindow,
+    > .start-action,
+    > .end-action {
+      filter: none;
+      transition: none;
     }
   }
 }
 
-dnd tab {
-  min-height: 26px;
-  background-color: $headerbar_bg_color;
-  color: $headerbar_fg_color;
-
-  &.needs-attention {
-    background-image: $tab_needs_attention_gradient;
+%tabbar-shrunk {
+  tabbox,
+  .start-action,
+  .end-action {
+    padding-top: 3px;
+    padding-bottom: 3px;
   }
+}
 
-  box-shadow: 0 1px 5px 1px transparentize(black, .91),
-              0 2px 14px 3px transparentize(black, .95),
-              0 0 0 1px transparentize(black, if($contrast == 'high', .2, .95));
+dnd tab {
+  background-color: var(--headerbar-bg-color);
+  background-image: image($selected_active_color);
+  color: var(--headerbar-fg-color);
 
-  outline: 1px solid $window_outline_color;
-  outline-offset: -1px;
+  box-shadow: 0 0 0 1px RGB(0 0 0 / 3%),
+              0 1px 3px 1px RGB(0 0 0 / 7%),
+              0 2px 6px 2px RGB(0 0 0 / 3%);
+
+  @if $contrast == 'high' {
+    outline: 1px solid $border_color;
+    outline-offset: -1px;
+  }
 
   margin: 25px;
 }
@@ -214,7 +147,9 @@ dnd tab {
 tabbar,
 dnd {
   tab {
-    padding: 6px;
+    min-height: 26px;
+    padding: 4px;
+    border-radius: $button_radius;
 
     button.image-button {
       padding: 0;
@@ -223,10 +158,116 @@ dnd {
       min-height: 24px;
       border-radius: 99px;
     }
+
+    indicator {
+      min-height: 2px;
+      border-radius: 2px;
+      background: if($contrast == 'high', var(--accent-color), color-mix(in srgb, var(--accent-color) 50%, transparent));
+      transform: translateY(4px);
+    }
+  }
+}
+
+tabgrid > tabgridchild {
+  @include focus-ring(".card", $offset: 0, $outer: true);
+}
+
+tabthumbnail {
+  border-radius: $card_radius + 4px;
+
+  > box {
+    margin: 6px;
+  }
+
+  &:drop(active) {
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, $drop_target_color 40%, transparent);
+    background-color: color-mix(in srgb, $drop_target_color 10%, transparent);
+  }
+
+  transition: box-shadow 200ms $ease-out-quad, background-color $ease-out-quad;
+
+  .needs-attention {
+    &:dir(ltr) { transform: translate(8px, -8px); }
+    &:dir(rtl) { transform: translate(-8px, -8px); }
+
+    > widget {
+      background: var(--accent-color);
+      min-width: 12px;
+      min-height: 12px;
+      border-radius: 8px;
+      margin: 3px;
+      box-shadow: 0 1px 2px color-mix(in srgb, var(--accent-color) 40%, transparent);
+    }
+  }
+
+  .card {
+    picture {
+      outline: 1px solid $window_outline_color;
+      outline-offset: -1px;
+      border-radius: $card_radius;
+    }
+
+    background: none;
+    color: inherit;
+
+    @if $contrast == 'high' {
+      box-shadow: 0 0 0 1px RGB(0 0 6 / 50%),
+                  0 1px 3px 1px RGB(0 0 6 / 7%),
+                  0 2px 6px 2px RGB(0 0 6 / 3%);
+    }
+  }
+
+  &.pinned .card {
+    background-color: var(--thumbnail-bg-color);
+    color: var(--thumbnail-fg-color);
+
+    @if $contrast == 'high' {
+      outline: 1px solid $window_outline_color;
+      outline-offset: -1px;
+    }
+  }
+
+  .icon-title-box {
+    border-spacing: 6px;
+  }
+
+  .tab-unpin-icon {
+    margin: 6px;
+    min-width: 24px;
+    min-height: 24px;
+  }
+
+  button.circular {
+    margin: 6px;
+    background-color: color-mix(in srgb, var(--thumbnail-bg-color) 75%, transparent);
+    min-width: 24px;
+    min-height: 24px;
+
+    @if $contrast == 'high' {
+      box-shadow: 0 0 0 1px currentColor;
+    }
+
+    &:hover {
+      background-color: color-mix(in srgb, var(--thumbnail-bg-color) calc(0.9 * 75%), currentColor calc(0.1 * 75%));
+    }
+
+    &:active {
+      background-color: color-mix(in srgb, var(--thumbnail-bg-color) calc(0.8 * 75%), currentColor calc(0.2 * 75%));
+    }
+  }
+}
+
+taboverview > .overview {
+  color: var(--overview-fg-color);
+  background-color: var(--overview-bg-color);
+
+  .new-tab-button {
+    margin: 18px;
   }
 }
 
 tabview:drop(active),
-tabbox:drop(active) {
+tabbox:drop(active),
+tabgrid:drop(active) {
   box-shadow: none;
 }

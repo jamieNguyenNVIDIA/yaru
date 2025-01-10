@@ -3,8 +3,6 @@ colorswatch {
   // is colorswatch overlay {}, colorswatch has the programmatically set background, so most of the style is
   // applied to the overlay box.
 
-  transition: $focus_transition;
-
   @include focus-ring($width: 4px, $offset: -2px);
 
   // base color corners rounding
@@ -56,7 +54,7 @@ colorswatch {
 
   @if $contrast == 'high' {
     > overlay {
-      box-shadow: inset 0 0 0 1px gtkalpha($view_fg_color, .5);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--view-fg-color) 50%, transparent);
     }
   }
 
@@ -65,10 +63,10 @@ colorswatch {
   }
 
   &.light > overlay {
-    color: transparentize(black, .25);
+    color: RGB(0 0 6 / 75%);
 
     @if $contrast != 'high' {
-      box-shadow: inset 0 0 0 1px gtkalpha($view_fg_color, 0.1);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--view-fg-color) 10%, transparent);
     }
   }
 
@@ -93,7 +91,7 @@ colorswatch {
   }
 
   &:disabled {
-    filter: opacity($disabled_opacity);
+    filter: Opacity(var(--disabled-opacity));
   }
 
   &#editor-color-sample {
@@ -104,8 +102,6 @@ colorswatch {
 }
 
 plane {
-  transition: $focus_transition;
-
   @include focus-ring($offset: 2px, $outer: true);
 }
 

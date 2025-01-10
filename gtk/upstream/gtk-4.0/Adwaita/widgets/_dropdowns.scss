@@ -1,15 +1,12 @@
-dropdown > popover.menu > contents { padding: 0; }
+dropdown {
+  > button > box {
+    border-spacing: 6px;
 
-dropdown > button > box {
-  border-spacing: 6px;
-
-  > stack > row.activatable:hover {
-    background: none;
+    > stack > row.activatable {
+      &:hover, &:active { background: none; }
+    }
   }
-}
 
-dropdown,
-combobox {
   arrow {
     -gtk-icon-source: -gtk-icontheme('pan-down-symbolic');
     min-height: 16px;
@@ -22,19 +19,20 @@ combobox {
     button.combo { @extend %button_basic_drop_active; }
   }
 
-  popover {
+  popover.menu {
     padding-top: 6px;
 
-    listview {
-      > row {
-        min-width: 0;
-      }
+    listview > row {
+      min-width: 0;
     }
 
     // dropdowns with searchboxes on top
     .dropdown-searchbar {
       padding: 6px;
-      border-bottom: 1px solid $border_color;
+
+      + scrolledwindow:not(.undershoot-top) {
+        @include undershoot(top);
+      }
     }
   }
 }

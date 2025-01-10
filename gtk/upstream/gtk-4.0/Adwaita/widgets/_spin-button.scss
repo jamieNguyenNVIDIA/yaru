@@ -10,11 +10,13 @@ spinbutton {
   > button.image-button.down:not(.flat):not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque) {
     @extend %button_basic_flat;
 
+    margin: 0;
+
     border-radius: 0;
     box-shadow: none;
 
     border-style: solid;
-    border-color: gtkalpha(currentColor, if($contrast == 'high', .5, .1));
+    border-color: color-mix(in srgb, currentColor if($contrast == 'high', 50%, 10%), transparent);
   }
 
   &:not(.vertical) {
@@ -65,18 +67,6 @@ spinbutton {
         border-bottom-width: 1px;
         border-radius: $button_radius $button_radius 0 0;
       }
-    }
-  }
-
-  // Misc
-  treeview &:not(.vertical) {
-    min-height: 0;
-    border-style: none;
-    border-radius: 0;
-
-    > text {
-      min-height: 0;
-      padding: 1px 2px;
     }
   }
 }

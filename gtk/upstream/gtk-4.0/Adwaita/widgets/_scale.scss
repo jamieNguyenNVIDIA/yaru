@@ -1,4 +1,7 @@
+$_slider_border_color: RGB(0 0 6 / #{if($contrast == 'high', 35%, 10%)});
+
 %scale_trough {
+  transition: $button_transition;
   border-radius: 99px;
   background-color: $trough_color;
 
@@ -8,24 +11,25 @@
 }
 
 %scale_highlight {
+  transition: $button_transition;
   border-radius: 99px;
-  background-color: $fill_color;
-  color: $fill_text_color;
+  background-color: var(--accent-bg-color);
+  color: var(--accent-fg-color);
 }
 
 scale {
   // sizing
   $_marks_length: 6px;
   $_marks_distance: 6px;
+  $_marks_size: $_marks_length + $_marks_distance;
 
   min-height: 10px;
   min-width: 10px;
   padding: 12px;
 
-  @include focus-ring("> trough", $offset: 10px);
+  @include focus-ring("> trough > slider", $offset: 0);
 
   > trough {
-    transition: $focus_transition;
     @extend %scale_trough;
 
     // the colored part of the backing bit
@@ -39,12 +43,9 @@ scale {
 
     > slider {
       background-color: $slider_color;
-      box-shadow: 0 2px 4px transparentize(black, .8);
-      outline: 1px solid transparentize(black, .9);
+      box-shadow: 0 0 0 1px $_slider_border_color, 0 2px 4px RGB(0 0 6 / 20%);
 
       border-radius: 100%;
-      transition: $button_transition;
-      transition-property: background, border, box-shadow;
 
       // the slider is inside the trough, so to have make it bigger there's a negative margin
       min-width: 20px;
@@ -53,12 +54,12 @@ scale {
     }
   }
 
-  &:hover {
+  &:hover, &:active {
     > trough {
       background-color: $trough_hover_color;
 
       > highlight {
-        background-image: image(gtkalpha(currentColor, .1));
+        background-image: image(color-mix(in srgb, currentColor 10%, transparent));
       }
 
       > slider {
@@ -67,46 +68,17 @@ scale {
     }
   }
 
-  .osd & {
-    &:focus:focus-visible > trough {
-      outline-color: $osd_focus_color;
-    }
-
-    > trough > highlight {
-      background-color: $osd_fill_bg_color;
-      color: $osd_fill_fg_color;
-    }
-  }
-
   &:disabled {
-    filter: opacity($disabled_opacity);
+    filter: Opacity(var(--disabled-opacity));
 
     > trough > slider {
-      box-shadow: 0 2px 4px transparent;
-      outline-color: transparentize(black, if($contrast == 'high', .5, .8));
-    }
-  }
-
-  // click-and-hold the slider to activate
-  &.fine-tune {
-    padding: 9px;
-
-    &.horizontal {
-      min-height: 16px;
-    }
-
-    &.vertical {
-      min-width: 16px;
-    }
-
-    > trough {
-      // to make the trough grow in fine-tune mode
-      > slider { margin: -5px; }
+      box-shadow: 0 0 0 1px $_slider_border_color, 0 2px 4px transparent;
+      outline-color: RGB(0 0 6 / #{if($contrast == 'high', 50%, 20%)});
     }
   }
 
   > value {
-    @extend .dim-label;
+    @extend .dimmed;
     @extend .numeric;
   }
 
@@ -117,17 +89,17 @@ scale {
 
       // Adjust box-shadow for the 45deg rotation, for 0px 2px we ideally want
       // 1/√2px 1/√2px, round that to 1px 1px
-      box-shadow: 1px 1px 4px transparentize(black, .8);
+      box-shadow: 0 0 0 1px $_slider_border_color, 1px 1px 4px RGB(0 0 6 / 20%);
 
       &:disabled {
-        box-shadow: 1px 1px 4px transparent;
+        box-shadow: 0 0 0 1px $_slider_border_color, 1px 1px 4px transparent;
       }
     }
   }
 
   &.horizontal {
     > marks {
-      color: gtkalpha(currentColor, $dim_label_opacity);
+      color: color-mix(in srgb, currentColor var(--dim-opacity), transparent);
       &.top    { margin-bottom: $_marks_distance; }
       &.bottom { margin-top: $_marks_distance; }
 
@@ -138,22 +110,46 @@ scale {
       }
     }
 
+    &:not(.marks-before) {
+      > value.top { margin-bottom: $_marks_size; }
+    }
+
+    &:not(.marks-after) {
+      > value.bottom { margin-top: $_marks_size; }
+    }
+
     > value.left  { margin-right: 9px; }
     > value.right { margin-left: 9px; }
 
-    &.fine-tune > marks {
-      &.top { margin-top: 3px; }
-      &.bottom { margin-bottom: 3px; }
+    &.fine-tune {
+      > trough {
+        // to make the trough grow vertically in fine-tune mode
+        margin: -3px 0px;
+        > slider { margin: -5px -8px; }
+      }
 
-      indicator { min-height: ($_marks_length - 3px); }
+      > marks {
+        &.top { margin-top: 3px; }
+        &.bottom { margin-bottom: 3px; }
+
+        indicator { min-height: ($_marks_length - 3px); }
+      }
     }
 
-    &.marks-before > trough > slider {
-      border-top-left-radius: 0;
+    &.marks-before {
+      padding-top: 0;
+
+       > trough > slider {
+        border-top-left-radius: 0;
+      }
     }
 
-    &.marks-after > trough > slider {
-      border-bottom-right-radius: 0;
+    &.marks-after {
+      padding-bottom: 0;
+
+      > trough > slider {
+        border-bottom-right-radius: 0;
+      }
     }
 
     &.marks-before.marks-after > trough > slider {
@@ -163,7 +159,7 @@ scale {
 
   &.vertical {
     > marks {
-      color: gtkalpha(currentColor, $dim_label_opacity);
+      color: color-mix(in srgb, currentColor var(--dim-opacity), transparent);
       &.top    { margin-right: $_marks_distance; }
       &.bottom { margin-left: $_marks_distance; }
 
@@ -174,138 +170,70 @@ scale {
       }
     }
 
+    &:not(.marks-before) {
+      > value.left { margin-right: $_marks_size; }
+    }
+
+    &:not(.marks-after) {
+      > value.right { margin-left: $_marks_size; }
+    }
+
     > value.top    { margin-bottom: 9px; }
     > value.bottom { margin-top: 9px; }
 
-    &.fine-tune > marks {
-      &.top { margin-left: 3px; }
-      &.bottom { margin-right: 3px; }
+    &.fine-tune {
+      > trough {
+        // to make the trough grow horizontally in fine-tune mode
+        margin: 0px -3px;
+        > slider { margin: -8px -5px; }
+      }
 
-      indicator { min-height: ($_marks_length - 3px); }
+      > marks {
+        &.top { margin-left: 3px; }
+        &.bottom { margin-right: 3px; }
+
+        indicator { min-width: ($_marks_length - 3px); }
+      }
     }
 
-    &.marks-before > trough > slider {
-      border-bottom-left-radius: 0;
+    &.marks-before {
+      padding-left: 0;
+
+      > trough > slider {
+        border-bottom-left-radius: 0;
+      }
     }
 
-    &.marks-after > trough > slider {
-      border-top-right-radius: 0;
+    &.marks-after {
+      padding-right: 0;
+
+      > trough > slider {
+        border-top-right-radius: 0;
+      }
     }
   }
 
   &.color {
-    min-height: 0;
-    min-width: 0;
+    padding: 0;
 
     > trough {
-      background-image: image($border_color);
-      background-repeat: no-repeat;
-    }
+      border: none;
+      background: none;
+      border-radius: 10px;
 
-    &.horizontal {
-      padding: 0 0 15px 0;
-
-      > trough {
-        padding-bottom: 4px;
-        background-position: 0 -3px;
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-
-        > slider {
-          &:dir(ltr), &:dir(rtl) { // specificity bump
-            &:hover, &:disabled, & {
-              margin-bottom: -15px;
-              margin-top: 6px;
-            }
-          }
-        }
-      }
-    }
-
-    &.vertical {
-      &:dir(ltr) {
-        padding: 0 0 0 15px;
-
-        > trough {
-          padding-left: 4px;
-          background-position: 3px 0;
-          border-bottom-right-radius: 0;
-          border-top-right-radius: 0;
-
-          > slider {
-            &:hover, &:disabled, & {
-              margin-left: -15px;
-              margin-right: 6px;
-            }
-          }
-        }
-      }
-
-      &:dir(rtl) {
-        padding: 0 15px 0 0;
-
-        > trough {
-          padding-right: 4px;
-          background-position: -3px 0;
-          border-bottom-left-radius: 0;
-          border-top-left-radius: 0;
-
-          > slider {
-            &:hover, &:disabled, & {
-              margin-right: -15px;
-              margin-left: 6px;
-            }
-          }
-        }
+      > slider {
+        margin: 0;
+        background-color: RGB(255 255 255 / 80%);
       }
     }
 
     &.fine-tune {
-      &.horizontal {
-        &:dir(ltr), &:dir(rtl) { // specificity bump
-          padding: 0 0 12px 0;
+      padding: 2px;
 
-          > trough {
-            padding-bottom: 7px;
-            background-position: 0 -6px;
-
-            > slider {
-              margin-bottom: -15px;
-              margin-top: 6px;
-            }
-          }
-        }
-      }
-
-      &.vertical {
-        &:dir(ltr) {
-          padding: 0 0 0 12px;
-
-          > trough {
-            padding-left: 7px;
-            background-position: 6px 0;
-
-            > slider {
-              margin-left: -15px;
-              margin-right: 6px;
-            }
-          }
-        }
-
-        &:dir(rtl) {
-          padding: 0 12px 0 0;
-
-          > trough {
-            padding-right: 7px;
-            background-position: -6px 0;
-
-            > slider {
-              margin-right: -15px;
-              margin-left: 6px;
-            }
-          }
-        }
+      > trough > slider {
+        margin: -2px;
       }
     }
   }
 }
+

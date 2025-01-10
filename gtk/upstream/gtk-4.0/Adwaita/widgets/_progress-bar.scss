@@ -15,13 +15,13 @@ progressbar {
   }
 
   > text {
-    @extend .dim-label;
+    @extend .dimmed;
     @extend .numeric;
     font-size: smaller;
   }
 
   &:disabled {
-    filter: opacity($disabled_opacity);
+    filter: Opacity(var(--disabled-opacity));
   }
 
   > trough {
@@ -56,10 +56,10 @@ progressbar {
     }
   }
 
-  &.osd { // progressbar.osd used for epiphany page loading progress
+  &.osd {
+    // Thin progress bar with no trough, usually goes under the header bar
     min-width: 2px;
     min-height: 2px;
-    background-color: transparent;
 
     > trough {
       border-style: none;
@@ -71,7 +71,6 @@ progressbar {
         border-style: none;
         border-radius: 0;
       }
-
     }
 
     &.horizontal {
@@ -84,8 +83,4 @@ progressbar {
   }
 
   > trough.empty > progress { all: unset; } // makes the progress indicator disappear, when the fraction is 0
-
-  .osd & > trough > progress {
-    background-color: $osd_fill_bg_color;
-  }
 }
