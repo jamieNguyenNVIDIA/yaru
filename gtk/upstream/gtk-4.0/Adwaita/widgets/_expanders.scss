@@ -4,7 +4,7 @@ expander {
   -gtk-icon-source: -gtk-icontheme('pan-end-symbolic');
   &:dir(rtl) { -gtk-icon-source: -gtk-icontheme('pan-end-symbolic-rtl'); }
 
-  &:disabled { filter: opacity($disabled_opacity); }
+  &:disabled { filter: Opacity(var(--disabled-opacity)); }
 
   &:checked { -gtk-icon-source: -gtk-icontheme('pan-down-symbolic'); }
 }
@@ -13,14 +13,14 @@ expander-widget {
   @include focus-ring("> box > title");
 
   > box > title {
-    transition: $focus_transition;
-    border-radius: $button_radius;
+    border-radius: 6px;
 
     > expander {
       opacity: .7;
     }
 
-    &:hover > expander {
+    &:hover > expander,
+    &:active > expander {
       opacity: 1;
     }
   }

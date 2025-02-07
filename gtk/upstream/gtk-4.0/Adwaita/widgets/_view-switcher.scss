@@ -1,39 +1,26 @@
 viewswitcher {
-  margin: 0;
+  border-spacing: 3px;
+  min-height: 34px;
 
-  &.wide {
-    border-spacing: 3px;
-  }
-
-  &.narrow button.toggle {
-    border-radius: 0;
-    margin: 0;
-
-    @if $contrast == 'high' {
-      &:hover,
-      &.keyboard-activating,
-      &:active,
-      &:checked {
-        box-shadow: inset  1px 0 $border_color,
-                    inset -1px 0 $border_color;
-      }
-    }
+  &.narrow {
+    margin-top: -3px;
+    margin-bottom: -3px;
+    min-height: 6px;
   }
 
   button.toggle {
-    font-weight: bold;
     padding: 0;
 
     > stack > box {
       &.narrow {
         font-size: 0.75rem;
-        padding-top: 7px;
-        padding-bottom: 5px;
-        border-spacing: 4px;
+        padding-top: 4px;
 
-        > stack > label {
-          padding-left: 8px;
-          padding-right: 8px;
+        > label {
+          min-height: 18px;
+          padding-left: 3px;
+          padding-right: 3px;
+          padding-bottom: 2px;
         }
       }
 
@@ -50,16 +37,43 @@ viewswitcher {
  **********************/
 
 viewswitcherbar actionbar > revealer > box {
-  padding: 0;
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 7px;
+}
+
+%viewswitcherbar-shrunk actionbar > revealer > box {
+  // Not 0px because view switcher has negative margin
+  padding-top: 6px;
 }
 
 /************************
  * AdwViewSwitcherTitle *
  ************************/
 
-viewswitchertitle viewswitcher {
-  margin-left: 12px;
-  margin-right: 12px;
+viewswitchertitle {
+  margin-top: -6px;
+  margin-bottom: -6px;
+
+  viewswitcher {
+    margin-left: 12px;
+    margin-right: 12px;
+
+    &.narrow {
+      margin-top: 3px;
+      margin-bottom: 3px;
+    }
+
+    &.wide {
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+  }
+
+  windowtitle {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
 }
 
 /*******************
@@ -75,14 +89,7 @@ indicatorbin {
 
   > indicator {
     margin: 1px;
-    background: gtkalpha(currentColor, .4);
-
-    > label {
-      font-size: 0.6rem;
-      font-weight: bold;
-      padding: 1px 4px;
-      color: white;
-    }
+    background: color-mix(in srgb, currentColor 40%, transparent);
   }
 
   > mask {
@@ -91,8 +98,27 @@ indicatorbin {
   }
 
   &.needs-attention > indicator {
-    background: $accent_bg_color;
+    background: var(--accent-color);
+  }
 
-    > label { color: $accent_fg_color; }
+  &.badge {
+    > indicator,
+    > mask {
+      min-height: 13px;
+    }
+
+    > indicator > label {
+      font-size: 0.6rem;
+      font-weight: bold;
+      padding-left: 4px;
+      padding-right: 4px;
+      color: white;
+    }
+
+    &.needs-attention > indicator {
+      background: var(--accent-bg-color);
+
+      > label { color: var(--accent-fg-color); }
+    }
   }
 }

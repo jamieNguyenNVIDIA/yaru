@@ -10,6 +10,8 @@ shortcuts-section {
 // shortcut window keys
 shortcut {
   border-spacing: 6px;
+  border-radius: 6px;
+  @include focus-ring($outer: true, $offset: 4px);
 
   > .keycap {
     min-width: 20px;
@@ -18,21 +20,36 @@ shortcut {
 
     @extend %card;
 
-    border-radius: $button_radius;
+    border-radius: 6px;
     font-size: smaller;
   }
 }
 
-stackswitcher > button.text-button { min-width: 100px; } // FIXME aggregate with buttons
-
-stackswitcher.circular {
+shortcuts-section stackswitcher.circular {
   border-spacing: 12px;
 
-  // FIXME aggregate with buttons
   > button.circular,
   > button.text-button.circular {
     min-width: 32px;
     min-height: 32px;
     padding: 0;
+  }
+}
+
+window.shortcuts:not(.ssd-frame) {
+  headerbar.titlebar {
+    @extend .flat;
+    @extend %headerbar-shrunk;
+
+    > windowhandle {
+      padding-top: 3px;
+    }
+  }
+
+  searchbar {
+    @extend %searchbar-flat;
+    @extend %searchbar-shrunk;
+
+    background: none;
   }
 }
