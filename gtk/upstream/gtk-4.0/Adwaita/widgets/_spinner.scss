@@ -1,16 +1,11 @@
-@keyframes spin {
-  to { transform: rotate(1turn); }
+spinner:disabled {
+  opacity: var(--disabled-opacity);
 }
 
-spinner {
-  background: none;
-  opacity: 0; // non spinning spinner makes no sense
-  -gtk-icon-source: -gtk-icontheme('process-working-symbolic');
+/**************
+ * AdwSpinner *
+ **************/
 
-  &:checked {
-    opacity: 1;
-    animation: spin 1s linear infinite;
-
-    &:disabled { opacity: $disabled_opacity; }
-  }
+image.spinner:disabled {
+  opacity: var(--disabled-opacity);
 }
